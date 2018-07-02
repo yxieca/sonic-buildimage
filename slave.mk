@@ -98,8 +98,8 @@ ifeq ($(SONIC_BUILD_JOBS),)
 override SONIC_BUILD_JOBS := $(SONIC_CONFIG_BUILD_JOBS)
 endif
 
-ifeq ($(KERNEL_BUILD_METHOD),)
-override KERNEL_BUILD_METHOD := $(DEFAULT_KERNEL_BUILD_METHOD)
+ifeq ($(KERNEL_PROCURE_METHOD),)
+override KERNEL_PROCURE_METHOD := $(DEFAULT_KERNEL_PROCURE_METHOD)
 endif
 
 MAKEFLAGS += -j $(SONIC_BUILD_JOBS)
@@ -130,7 +130,7 @@ $(info "HTTPS_PROXY"                     : "$(HTTPS_PROXY)")
 $(info "ENABLE_SYSTEM_TELEMETRY"         : "$(ENABLE_SYSTEM_TELEMETRY)")
 $(info "SONIC_DEBUGGING_ON"              : "$(SONIC_DEBUGGING_ON)")
 $(info "SONIC_PROFILING_ON"              : "$(SONIC_PROFILING_ON)")
-$(info "KERNEL_BUILD_METHOD"             : "$(KERNEL_BUILD_METHOD)")
+$(info "KERNEL_PROCURE_METHOD"           : "$(KERNEL_PROCURE_METHOD)")
 $(info )
 
 ###############################################################################
@@ -138,7 +138,7 @@ $(info )
 ## All rules must go after includes for propper targets expansion
 ###############################################################################
 
-export kernel_build_method="$(KERNEL_BUILD_METHOD)"
+export kernel_procure_method="$(KERNEL_PROCURE_METHOD)"
 
 ###############################################################################
 ## Local targets

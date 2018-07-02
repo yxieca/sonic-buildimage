@@ -67,7 +67,7 @@ ENABLE_ORGANIZATION_EXTENSIONS = y
 # ENABLE_SYSTEM_TELEMETRY - build docker-sonic-telemetry for system telemetry support
 # ENABLE_SYSTEM_TELEMETRY = y
 
-# DEFAULT_KERNEL_BUILD_METHOD - default method for building kernel
+# DEFAULT_KERNEL_PROCURE_METHOD - default method for obtaining kernel
 #   build:    build kernel from source
-#   download: downlaod built kernel from Azure storage.
-DEFAULT_KERNEL_BUILD_METHOD = build
+#   download: downlaod pre-built kernel from Azure storage.
+DEFAULT_KERNEL_PROCURE_METHOD = build
