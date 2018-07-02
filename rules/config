@@ -69,5 +69,5 @@ ENABLE_ORGANIZATION_EXTENSIONS = y
 
 # DEFAULT_KERNEL_PROCURE_METHOD - default method for obtaining kernel
 #   build:    build kernel from source
-#   download: downlaod pre-built kernel from Azure storage.
+#   download: download pre-built kernel from Azure storage.
 DEFAULT_KERNEL_PROCURE_METHOD = build
