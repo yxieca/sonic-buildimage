@@ -10,6 +10,35 @@
 ##   PASSWORD
 ##          The password, expected by chpasswd command
 
+function install_docker_deb()
+{
+    url=$1
+    docker_deb_temp=`mktemp`
+    trap_push "rm -f $docker_deb_temp"
+    wget $url -qO $docker_deb_temp
+    sudo dpkg --root=$FILESYSTEM_ROOT -i $docker_deb_temp || \
+        sudo LANG=C DEBIAN_FRONTEND=noninteractive chroot $FILESYSTEM_ROOT apt-get -y install -f
+}
+
+function upgrade_docker_deb()
+{
+    url=$1
+    docker_deb_temp=`mktemp`
+    trap_push "rm -f $docker_deb_temp"
+    wget $url -qO $docker_deb_temp
+    sudo dpkg --force-conflicts --force-overwrite --root=$FILESYSTEM_ROOT -i $docker_deb_temp
+}
+
+function prepare_docker_upgrade()
+{
+    ## This upgrade preparation is very verion speific. Because we are chroot'ing
+    ## to create installer image. The docker service is not really running in the
+    ## target file system root. Removing docker-engine.prerm will avoid stopping
+    ## the never-started service and failing.
+    sudo LANG=C rm $FILESYSTEM_ROOT/var/lib/dpkg/info/docker-engine.prerm
+    sudo dpkg --root=$FILESYSTEM_ROOT -r docker-engine
+}
+
 ## Default user
 [ -n "$USERNAME" ] || {
     echo "Error: no or empty USERNAME"
@@ -29,7 +58,9 @@
 set -x -e
 
 ## docker engine version (with platform)
-DOCKER_VERSION=1.11.1-0~stretch_amd64
+DOCKER_INIT_VERSION=1.11.1-0~stretch_amd64
+CONTAINERD_VERSION=1.2.0-1_amd64
+DOCKER_VERSION=18.09.0~3-0~debian-stretch_amd64
 LINUX_KERNEL_VERSION=4.9.0-8
 
 ## Working directory to prepare the file system
@@ -159,17 +190,12 @@ echo '[INFO] Install docker'
 ## Install apparmor utils since they're missing and apparmor is enabled in the kernel
 ## Otherwise Docker will fail to start
 sudo LANG=C chroot $FILESYSTEM_ROOT apt-get -y install apparmor
-docker_deb_url=https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_${DOCKER_VERSION}.deb
-docker_deb_temp=`mktemp`
-trap_push "rm -f $docker_deb_temp"
-wget $docker_deb_url -qO $docker_deb_temp
-sudo dpkg --root=$FILESYSTEM_ROOT -i $docker_deb_temp || \
-    sudo LANG=C DEBIAN_FRONTEND=noninteractive chroot $FILESYSTEM_ROOT apt-get -y install -f
 
-## Add docker config drop-in to select aufs, otherwise it may select other storage driver
-sudo mkdir -p $FILESYSTEM_ROOT/etc/systemd/system/docker.service.d/
-## Note: $_ means last argument of last command
-sudo cp files/docker/docker.service.conf $_
+## Install lower version docker to load docker images into target installer.
+## The higher version docker requires docker daemon running in order to load
+## docker images. Which is not possible with chroot.
+docker_deb_url=https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_${DOCKER_INIT_VERSION}.deb
+install_docker_deb ${docker_deb_url}
 
 ## Create default user
 ## Note: user should be in the group with the same name, and also in sudo/docker group
@@ -374,6 +400,21 @@ EOF
 if [ -f sonic_debian_extension.sh ]; then
     ./sonic_debian_extension.sh $FILESYSTEM_ROOT $PLATFORM_DIR
 fi
+
+## Upgrade docker to target version. Docker images are loaded by
+## sonic_debian_extension.sh
+prepare_docker_upgrade
+containerd_deb_url=https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/containerd.io_${CONTAINERD_VERSION}.deb
+upgrade_docker_deb ${containerd_deb_url}
+docker_cli_deb_url=https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/docker-ce-cli_${DOCKER_VERSION}.deb
+upgrade_docker_deb ${docker_cli_deb_url}
+docker_deb_url=https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/docker-ce_${DOCKER_VERSION}.deb
+upgrade_docker_deb ${docker_deb_url}
+
+## Add docker config drop-in to select aufs, otherwise it may select other storage driver
+sudo mkdir -p $FILESYSTEM_ROOT/etc/systemd/system/docker.service.d/
+## Note: $_ means last argument of last command
+sudo cp files/docker/docker.service.conf $_
 
 ## Organization specific extensions such as Configuration & Scripts for features like AAA, ZTP...
 if [ "${enable_organization_extensions}" = "y" ]; then
