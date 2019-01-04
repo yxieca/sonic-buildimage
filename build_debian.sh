@@ -31,7 +31,7 @@ function upgrade_docker_deb()
 
 function prepare_docker_upgrade()
 {
-    ## This upgrade preparation is very verion speific. Because we are chroot'ing
+    ## This upgrade preparation is very verion specific. Because we are chroot'ing
     ## to create installer image. The docker service is not really running in the
     ## target file system root. Removing docker-engine.prerm will avoid stopping
     ## the never-started service and failing.
