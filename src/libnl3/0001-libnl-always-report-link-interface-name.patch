@@ -1,0 +1,39 @@
+From 72fc79b2695004ce172583ac670df7b5c7dfec23 Mon Sep 17 00:00:00 2001
+From: Ying Xie <ying.xie@microsoft.com>
+Date: Tue, 26 Mar 2019 16:23:43 +0000
+Subject: [PATCH] [libnl] always report link interface name
+
+Signed-off-by: Ying Xie <ying.xie@microsoft.com>
+---
+ lib/route/link.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/lib/route/link.c b/lib/route/link.c
+index 5c32550..05fe04f 100644
+--- a/lib/route/link.c
++++ b/lib/route/link.c
+@@ -1486,12 +1486,21 @@ int rtnl_link_build_change_request(struct rtnl_link *orig,
+ 		return -NLE_IMMUTABLE;
+ 	}
+ 
++#if 0 // Disable optimization
++    /* Justifications: some client (libteamd) experienced issue, if they
++     *   didn't get interface name from libnl upon receiving the
++     *   first notification after LINK_ATTR_IFNAME is set, with the
++     *   following code in place, these client wouldn't be able to query
++     *   interface name later because libnl won't return interface name
++     *   after LINK_ATTR_IFNAME flag is removed.
++     */
+ 	/* Avoid unnecessary name change requests */
+ 	if (orig->ce_mask & LINK_ATTR_IFINDEX &&
+ 	    orig->ce_mask & LINK_ATTR_IFNAME &&
+ 	    changes->ce_mask & LINK_ATTR_IFNAME &&
+ 	    !strcmp(orig->l_name, changes->l_name))
+ 		changes->ce_mask &= ~LINK_ATTR_IFNAME;
++#endif
+ 
+ 	if ((err = build_link_msg(RTM_NEWLINK, &ifi, changes, flags, result)) < 0)
+ 		goto errout;
+-- 
+2.7.4
+

@@ -27,7 +27,7 @@ $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 	git commit -qm "check in all loose files and diffs"
 
 	stg init
-	# When patches are ready: stg import -s ../series
+	stg import -s ../series
 
 	dpkg-buildpackage -rfakeroot -b -us -uc -j$(SONIC_CONFIG_MAKE_JOBS)
 
