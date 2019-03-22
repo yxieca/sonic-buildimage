@@ -22,7 +22,15 @@ $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 	dpkg-source -x libnl3_$(LIBNL3_VERSION).dsc
 
 	pushd ./libnl3-$(LIBNL3_VERSION_BASE)
+	git init
+	git add -f *
+	git commit -qm "check in all loose files and diffs"
+
+	stg init
+	# When patches are ready: stg import -s ../series
+
 	dpkg-buildpackage -rfakeroot -b -us -uc -j$(SONIC_CONFIG_MAKE_JOBS)
+
 	popd
 
 	mv $(DERIVED_TARGETS) $* $(DEST)/
