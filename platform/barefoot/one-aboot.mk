@@ -1,6 +1,6 @@
 # sonic one aboot installer
 
-SONIC_ONE_ABOOT_IMAGE = sonic-aboot-barefoot.swi
+SONIC_ONE_ABOOT_IMAGE = sonic-barefoot.swi
 $(SONIC_ONE_ABOOT_IMAGE)_MACHINE = barefoot
 $(SONIC_ONE_ABOOT_IMAGE)_IMAGE_TYPE = aboot
 $(SONIC_ONE_ABOOT_IMAGE)_INSTALLS += $(BFN_MODULE)

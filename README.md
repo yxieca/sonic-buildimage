@@ -148,7 +148,7 @@ For Broadcom ASIC, we build ONIE and EOS image. EOS image is used for Arista dev
     # build ONIE image
     make target/sonic-broadcom.bin
     # build EOS image
-    make target/sonic-aboot-broadcom.swi
+    make target/sonic-broadcom.swi
 
 You may find the rules/config file useful. It contains configuration options for the build process, like adding more verbosity or showing dependencies, username and password for base image etc.
 
