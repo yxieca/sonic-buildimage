@@ -388,4 +388,6 @@ RUN apt-get install -y docker-ce=5:18.09.5~3-0~debian-stretch
 RUN apt-get install -y docker-ce=18.06.3~ce~3-0~debian
 {%- endif %}
 RUN echo "DOCKER_OPTS=\"--experimental --storage-driver=vfs\"" >> /etc/default/docker
-RUN dpkg --clear-avail; apt-get -o Acquire::Check-Valid-Until=false update
+
+# Final cleanup. Please add new changes above.
+RUN dpkg --clear-avail; apt-get update

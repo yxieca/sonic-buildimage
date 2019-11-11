@@ -363,4 +363,6 @@ RUN echo "DOCKER_OPTS=\"--experimental --storage-driver=vfs\"" >> /etc/default/d
 RUN echo "deb [arch={{ CONFIGURED_ARCH }}] http://archive.debian.org/debian jessie-backports main" >> /etc/apt/sources.list
 RUN apt-get -o Acquire::Check-Valid-Until=false update
 RUN apt-get -y -o Acquire::Check-Valid-Until=false install ca-certificates-java=20161107~bpo8+1 openjdk-8-jdk
+
+# Final cleanup. Please add new changes above.
 RUN dpkg --clear-avail; apt-get -o Acquire::Check-Valid-Until=false update
