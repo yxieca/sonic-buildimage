@@ -39,6 +39,8 @@
 #  * SONIC_DPKG_CACHE_SOURCE: Debian package cache location when cache enabled for debian packages
 #  * BUILD_LOG_TIMESTAMP: Set timestamp in the build log (simple/none)
 #  * ENABLE_SYNCHRONOUS_MODE: Enable synchronous mode between orchagent and syncd
+#  * USER_LOGIN_LIMIT: Specifying number of concurrent login allowed per user.
+#  *                 Default: unlimited
 #
 ###############################################################################
 
@@ -205,6 +207,7 @@ SONIC_BUILD_INSTRUCTION :=  make \
                            KERNEL_PROCURE_METHOD=$(KERNEL_PROCURE_METHOD) \
                            SONIC_DPKG_CACHE_METHOD=$(SONIC_DPKG_CACHE_METHOD) \
                            SONIC_DPKG_CACHE_SOURCE=$(SONIC_DPKG_CACHE_SOURCE) \
+                           USER_LOGIN_LIMIT=$(USER_LOGIN_LIMIT) \
                            HTTP_PROXY=$(http_proxy) \
                            HTTPS_PROXY=$(https_proxy) \
                            SONIC_INCLUDE_SYSTEM_TELEMETRY=$(INCLUDE_SYSTEM_TELEMETRY) \

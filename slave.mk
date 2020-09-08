@@ -174,6 +174,10 @@ ifeq ($(BUILD_LOG_TIMESTAMP),)
 override BUILD_LOG_TIMESTAMP := $(DEFAULT_BUILD_LOG_TIMESTAMP)
 endif
 
+ifeq ($(USER_LOGIN_LIMIT),)
+override USER_LOGIN_LIMIT := $(DEFAULT_USER_LOGIN_LIMIT)
+endif
+
 MAKEFLAGS += -j $(SONIC_BUILD_JOBS)
 export SONIC_CONFIG_MAKE_JOBS
 
@@ -231,6 +235,7 @@ $(info "INCLUDE_NAT"                     : "$(INCLUDE_NAT)")
 $(info "INCLUDE_KUBERNETES"              : "$(INCLUDE_KUBERNETES)")
 $(info "TELEMETRY_WRITABLE"              : "$(TELEMETRY_WRITABLE)")
 $(info "ENABLE_SYNCHRONOUS_MODE"         : "$(ENABLE_SYNCHRONOUS_MODE)")
+$(info "USER_LOGIN_LIMIT"                : "$(USER_LOGIN_LIMIT)")
 $(info )
 
 include Makefile.cache
@@ -919,6 +924,7 @@ $(addprefix $(TARGET_PATH)/, $(SONIC_INSTALLERS)) : $(TARGET_PATH)/% : \
 	DEBUG_SRC_ARCHIVE_FILE="$(DBG_SRC_ARCHIVE_FILE)" \
 	USERNAME="$(USERNAME)" \
 	PASSWORD="$(PASSWORD)" \
+	USER_LOGIN_LIMIT="$(USER_LOGIN_LIMIT)" \
 	IMAGE_TYPE=$($*_IMAGE_TYPE) \
 		./build_debian.sh $(LOG)
 

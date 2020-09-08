@@ -112,7 +112,6 @@ SONIC_DPKG_CACHE_SOURCE ?= /var/cache/sonic/artifacts
 # Default VS build memory preparation
 DEFAULT_VS_PREPARE_MEM = yes
 
-
 # INCLUDE_SYSTEM_TELEMETRY - build docker-sonic-telemetry for system telemetry support
 INCLUDE_SYSTEM_TELEMETRY = y
 
@@ -161,3 +160,6 @@ SONIC_ENABLE_IMAGE_SIGNATURE ?= n
 
 # ENABLE_SYNCHRONOUS_MODE - enable synchronous mode between orchagent and syncd
 ENABLE_SYNCHRONOUS_MODE = n
+
+# Default SSH per user login limit (unlimited)
+DEFAULT_USER_LOGIN_LIMIT = 0

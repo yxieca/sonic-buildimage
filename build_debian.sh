@@ -413,6 +413,11 @@ done < files/image_config/sysctl/sysctl-net.conf
 
 sudo augtool --autosave "$sysctl_net_cmd_string" -r $FILESYSTEM_ROOT
 
+# Set per-user ssh login limit
+if [[ ${USER_LOGIN_LIMIT} -gt 0 ]]; then
+    sudo sed -i -e "$ i\# Limit per user ssh login\n*                -       maxlogins       ${USER_LOGIN_LIMIT}\n" ${FILESYSTEM_ROOT}/etc/security/limits.conf
+fi
+
 ## docker Python API package is needed by Ansible docker module
 sudo https_proxy=$https_proxy LANG=C chroot $FILESYSTEM_ROOT pip install 'docker==4.1.0'
 ## Note: keep pip installed for maintainance purpose
