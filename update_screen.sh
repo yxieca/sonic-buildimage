@@ -2,8 +2,8 @@
 
 # Use flock instead of lockfile to avoid stale lock files after crashes.
 # The lock is automatically released when the file descriptor is closed.
-exec 9>.screen.lock
-flock 9
+exec {lock_fd}>.screen.lock
+flock ${lock_fd}
 
 target_list_file=/tmp/target_list
 touch ${target_list_file}
@@ -53,7 +53,7 @@ echo $1 >> ${target_list_file}
 }
 
 function print_targets_delay {
-sleep 2 && print_targets &
+sleep 2 && print_targets && rm -f .screen &
 exit 0
 }
 
@@ -90,11 +90,15 @@ while getopts ":a:d:e:" opt; do
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
+            rm -f .screen
             exit 1
             ;;
         :)
             echo "Option -$OPTARG requires an argument." >&2
+            rm -f .screen
             exit 1
             ;;
     esac
 done
+
+rm -f .screen
